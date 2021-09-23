@@ -25,6 +25,10 @@ public class PlayerState : State {
 
         Vector3 normalizedPosition = transform.position;
         normalizedPosition.y = 0f;
+        
+        if (Vector3.Distance(normalizedPosition, objectHit) <= 0.2f) {
+            position = Vector3.zero;
+        }
     }
 
     void OnMouse(InputValue input){
