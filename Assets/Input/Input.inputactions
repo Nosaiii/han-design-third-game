@@ -1,0 +1,52 @@
+{
+    "name": "Input",
+    "maps": [
+        {
+            "name": "Camera",
+            "id": "fc45ca3a-1ac9-4a11-a39c-bc68c6e25042",
+            "actions": [
+                {
+                    "name": "Interact",
+                    "type": "Button",
+                    "id": "af604075-dbc6-4dbd-a758-57da9bda16c5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "MousePosition",
+                    "type": "Value",
+                    "id": "b8358725-abaf-4787-b275-52d825f3fd18",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "c4a194e3-ebc0-446e-a544-8c733954c378",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ae39fa9e-a0ea-47fa-8d89-8c8d7d4acc68",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MousePosition",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

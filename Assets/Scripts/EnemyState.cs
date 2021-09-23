@@ -6,14 +6,7 @@ public class EnemyState : State {
     [HideInInspector]
     public bool hasKilled;
 
-    private void Start() {
+    public virtual void Start() {
         AddTransition<PlayerState>(() => hasKilled);
-    }
-
-    public void KillPlayer(EnemyState enemy) {
-        if(enemy != this) {
-            return;
-        }
-        hasKilled = true;
     }
 }

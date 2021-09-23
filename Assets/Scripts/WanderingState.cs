@@ -8,6 +8,12 @@ public class WanderingState : EnemyState {
     private Vector3[] wanderPoints;
     private int currentWanderGoal;
 
+    public override void Start() {
+        base.Start();
+
+        AddTransition<SeekLightState>(() => FindObjectsOfType<LightSwitch>().Any(ls => ls.IsOn));
+    }
+
     public override void Update() {
         base.Update();
 

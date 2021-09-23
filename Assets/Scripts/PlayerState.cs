@@ -11,7 +11,7 @@ public class PlayerState : State {
     }
 
     public void Die(EnemyState enemy) {
-        health = 0;
         enemy.hasKilled = true;
+        health = 0;
     }
 }
