@@ -6,21 +6,27 @@ using UnityEngine.InputSystem;
 
 public class PlayerState : State {
     private int health = 1;
-    private Camera mainCamera;
+    [SerializeField]
+    private Camera _camera;
     private Vector3 objectHit;
     private Vector3 position;
 
     private void Start() {
         AddTransition<DeadState>(() => health <= 0);
-        mainCamera = Camera.main;
+    }
+
+    private void OnEnable() {
+        position = Vector3.zero;
     }
 
     public void Die(EnemyState enemy) {
         enemy.hasKilled = true;
         health = 0;
     }
-    public override void Update(){
-        transform.forward = position;
+    private void Update() {
+        if(position != Vector3.zero) {
+            transform.forward = position;
+        }
         transform.position += position;
 
         Vector3 normalizedPosition = transform.position;
@@ -32,14 +38,11 @@ public class PlayerState : State {
     }
 
     void OnMouse(InputValue input){
-        RaycastHit hit;
-
-        Ray ray = mainCamera.ScreenPointToRay(input.Get<Vector2>());
+        Ray ray = _camera.ScreenPointToRay(input.Get<Vector2>());
         
-        if (Physics.Raycast(ray, out hit)) {
+        if (Physics.Raycast(ray, out RaycastHit hit)) {
             objectHit = hit.point;
         }
-
     }
 
     void OnFire(InputValue input){

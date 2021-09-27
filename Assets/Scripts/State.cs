@@ -10,18 +10,6 @@ public class State : MonoBehaviour {
         Transitions = new List<(Func<bool>, State)>();
     }
 
-    public virtual void OnEnable() {
-        
-    }
-
-    public virtual void OnDisable() {
-        
-    }
-
-    public virtual void Update() {
-        
-    }
-
     public void AddTransition<StateType>(Func<bool> condition) where StateType : State {
         var target = GetComponent<StateType>();
         Transitions.Add((condition, target));

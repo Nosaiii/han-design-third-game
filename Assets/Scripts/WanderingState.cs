@@ -7,6 +7,18 @@ public class WanderingState : EnemyState {
     [SerializeField]
     private Vector3[] wanderPoints;
     private int currentWanderGoal;
+    private int PreviousWanderGoal {
+        get {
+            int index = currentWanderGoal - 1;
+            if (index < 0) {
+                index = wanderPoints.Length - 1;
+            }
+            return index;
+        }
+    }
+
+    [SerializeField]
+    private float seekDistance = 5.0f;
 
     public override void Start() {
         base.Start();
@@ -14,9 +26,7 @@ public class WanderingState : EnemyState {
         AddTransition<SeekLightState>(() => FindObjectsOfType<LightSwitch>().Any(ls => ls.IsOn));
     }
 
-    public override void Update() {
-        base.Update();
-
+    private void Update() {
         Wander();
         Seek();
     }
@@ -26,15 +36,25 @@ public class WanderingState : EnemyState {
             return;
         }
 
-        Vector3 direction = (wanderPoints[currentWanderGoal] - transform.position).normalized * 2f * Time.deltaTime;
+        Vector3 direction = (wanderPoints[currentWanderGoal] - transform.position).normalized;
         direction.y = 0;
         transform.forward = direction;
-        transform.position += direction;
 
-        Vector3 normalizedPosition = transform.position;
-        normalizedPosition.y = 0f;
-        if (Vector3.Distance(normalizedPosition, wanderPoints[currentWanderGoal]) <= 0.2f) {
-            currentWanderGoal = currentWanderGoal + 1 >= wanderPoints.Length ? 0 : currentWanderGoal + 1;
+        float totalDistance = Vector3.Distance(wanderPoints[currentWanderGoal], wanderPoints[PreviousWanderGoal]);
+        float travelledDistance = Vector3.Distance(transform.position, wanderPoints[PreviousWanderGoal]);
+        float interpolationTime = 1f / totalDistance * travelledDistance;
+        interpolationTime += 0.01f * Time.deltaTime;
+        interpolationTime = Mathf.Min(interpolationTime, 1f);
+
+        if (interpolationTime < 1f) {
+            Vector3 interpolatedPosition = Vector3.Lerp(wanderPoints[PreviousWanderGoal], wanderPoints[currentWanderGoal], interpolationTime);
+            interpolatedPosition.y = transform.position.y;
+            transform.position = interpolatedPosition;
+        } else {
+            currentWanderGoal++;
+            if (currentWanderGoal == wanderPoints.Length) {
+                currentWanderGoal = 0;
+            }
         }
     }
 
@@ -44,11 +64,13 @@ public class WanderingState : EnemyState {
             .FirstOrDefault();
 
         Vector3 direction = player.transform.position - transform.position;
-        float distance = direction.magnitude;
         float angle = Vector3.Angle(transform.forward, direction.normalized);
 
-        if(angle <= 45 && distance <= 8f) {
-            player.Die(this);
+        if(angle <= 45) {
+            Collider[] colliders = Physics.OverlapSphere(transform.position, seekDistance);
+            if (colliders.Contains(player.GetComponent<Collider>())) {
+                player.Die(this);
+            }
         }
     }
 
@@ -57,5 +79,8 @@ public class WanderingState : EnemyState {
         foreach(Vector3 point in wanderPoints) {
             Gizmos.DrawSphere(point, 0.2f);
         }
+
+        Gizmos.color = new Color(255, 255, 255, 0.2f);
+        Gizmos.DrawSphere(transform.position, seekDistance);
     }
 }
